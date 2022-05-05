@@ -77,9 +77,11 @@ WSGI_APPLICATION = 'coreLaraServer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'lara-core-server',
-        'USER': 'root',
-        'PASSWORD': 'klk689423',
+        'NAME': 'databaseName',
+        'USER': 'databaseUser',
+        'PASSWORD': 'databasePassword',
+        'HOST': 'localhost',
+        'PORT': 'portNumber',
     }
 }
 
