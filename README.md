@@ -2,7 +2,7 @@
 
 <div id='start-of-project'/>
 <br>
-<img  style="min-widht:10px;max-width:200px;" src="./assets/logo.png" alt="logo">
+<img  style="width:200px;" src="./assets/logo.png" alt="logo">
 
 > O **LARA** (**Laboratório em Redes de Aprendizagem**), trata de um **AVA** com o objetivo de ser uma plataforma educacional que relaciona recursos tecnológicos e métodos de ensino  para aprimorar o processo de ensino de disciplinas do curso de Ciência da Computação. 
 
