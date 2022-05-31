@@ -24,10 +24,17 @@ class Reservation(models.Model):
         related_name='experiment'
     )
     time =  models.DateField(null=True, blank=True)
+    
     description = models.TextField(
         max_length=300, 
         blank=True
     )
     
+    type = models.TextField(
+        max_length=300, 
+        blank=True
+    )
+    
+
     def __str__(self):
         return self.description
