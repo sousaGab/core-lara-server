@@ -1,5 +1,5 @@
 import this
-from experiment.models import Reservation
+from .models import Reservation
 from rest_framework import serializers
 
 

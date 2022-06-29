@@ -1,5 +1,5 @@
 import this
-from experiment.models import Experiment
+from .models import Experiment
 from rest_framework import serializers
 
 

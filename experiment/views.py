@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework import permissions
-from experiment.models import Experiment
-from experiment.serializers import ExperimentSerializer
+from .models import Experiment
+from .serializers import ExperimentSerializer
 
 class ExperimentViewSet (viewsets.ModelViewSet):
     queryset = Experiment.objects.all()
