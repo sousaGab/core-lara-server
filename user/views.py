@@ -10,6 +10,12 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView 
 from rest_framework.response import Response
 
+class DefaultViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = DefaultUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
 class UserViewSet (viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -18,11 +24,7 @@ class UserViewSet (viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
-class DefaultViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = DefaultUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+user_view = UserViewSet.as_view()
 
 
 class Login(APIView):
@@ -31,7 +33,7 @@ class Login(APIView):
         password = request.data.get('password')
 
         if not username or not password:
-            return Response({'error': 'Please fill al fields'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Please fill all fields'}, status=status.HTTP_400_BAD_REQUEST)
         
         check_user = User.objects.filter(username=username).exists()
         
@@ -52,3 +54,5 @@ class Login(APIView):
 
         else :
             return Response({'error': 'Invalid login details'}, status= status.HTTP_400_BAD_REQUEST)
+
+login_view = Login.as_view()
