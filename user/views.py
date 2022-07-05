@@ -24,7 +24,7 @@ class UserViewSet (viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-user_view = UserViewSet.as_view()
+user_view = UserViewSet.as_view({'get': 'list'})
 
 
 class Login(APIView):
