@@ -3,8 +3,6 @@ from .models import Profile
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-
-
 class DefaultUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -21,3 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['id', 'location', 'personal']
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['location', 'birth_date']
