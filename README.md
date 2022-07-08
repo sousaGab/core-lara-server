@@ -51,4 +51,13 @@ Para usar LARA Core Server, siga estas etapas:
 
 Adicione comandos de execução e exemplos que você acha que os usuários acharão úteis. Fornece uma referência de opções para pontos de bônus!
 
+Abstract
+--------
+
+Simple JWT is a JSON Web Token authentication plugin for the `Django REST
+Framework <http://www.django-rest-framework.org/>`__.
+
+For full documentation, visit `django-rest-framework-simplejwt.readthedocs.io
+<https://django-rest-framework-simplejwt.readthedocs.io/en/latest/>`__.
+
 [⬆ Voltar ao topo](#start-of-project)<br>

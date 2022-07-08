@@ -24,7 +24,8 @@ class UserViewSet (viewsets.ModelViewSet):
     """
     queryset = Profile.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+    #authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
     pagination_class = PageNumberPagination
     
     def list(self, request, *args, **kwargs):
@@ -50,34 +51,3 @@ class UserViewSet (viewsets.ModelViewSet):
         #    permission_classes = [permissions.Read]
         return [permission() for permission in permission_classes]
     """
-
-
-class Login(APIView):
-    def post (self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-
-        if not username or not password:
-            return Response({'error': 'Please fill all fields'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        check_user = User.objects.filter(username=username).exists()
-        
-        if check_user == False:
-            return Response({'error': 'Username does not exists'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            # We can now create token for the user
-            token, created = Token.objects.get_or_create(user=request.user) # we check if user has token use it else create it
-            data = {
-                'token': token.key,
-                'user_id': request.user.pk,
-                'username': request.user.username,
-            }
-            return Response({'success': 'Successfully login', 'data': data }, status = status.HTTP_200_OK)
-
-        else :
-            return Response({'error': 'Invalid login details'}, status= status.HTTP_400_BAD_REQUEST)
-
-login_view = Login.as_view()
