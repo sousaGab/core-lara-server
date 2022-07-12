@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView 
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from .permissions import IsAdminOrOwnerUser
 
 class DefaultViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -18,18 +19,16 @@ class DefaultViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
 
-class UserViewSet (viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
     queryset = Profile.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    #authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
+    permission_classes = (permissions.IsAdminUser,)
     pagination_class = PageNumberPagination
     
     def list(self, request, *args, **kwargs):
-        self.permission_classes = (permissions.IsAdminUser,)
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         page = self.paginate_queryset(queryset)
@@ -41,13 +40,20 @@ class UserViewSet (viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
 
         return Response(serializer.data)
-    """
-    Instantiates and returns the list of permissions that this view requires.
-   
+    
     def get_permissions(self):
-        if self.action == 'list':
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """    
+        any_methods = ['create']
+        owner_methods = ['retrieve', 'partial_update', 'update', 'destroy']
+        admin_methods = ['list']
+        
+        if self.action in any_methods:
+            permission_classes = [permissions.AllowAny]
+        elif self.action in owner_methods:
+            permission_classes = [IsAdminOrOwnerUser]
+        elif self.action in admin_methods:
             permission_classes = [permissions.IsAdminUser]
-        #else:
-        #    permission_classes = [permissions.Read]
+            
         return [permission() for permission in permission_classes]
-    """

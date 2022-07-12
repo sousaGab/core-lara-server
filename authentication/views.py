@@ -79,21 +79,13 @@ def update_profile(profile, validated_data):
     fields=profile._meta.fields
     exclude=[]
     for field in fields:
-        field=field.name.split('.')[-1] #to get coulmn name
+        field=field.name.split('.')[-1] #to get coulumn name
         if field in exclude:
            continue
         exec("profile.%s = validated_data.get(field, profile.%s)"%(field,field))
     profile.save()
     return profile
 
-class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return response.Response(content)
-    
-    
 """   
 class LoginAPIView(GenericAPIView):
     
