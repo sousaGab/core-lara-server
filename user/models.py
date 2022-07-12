@@ -14,7 +14,7 @@ class Profile(models.Model):
     birth_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return self.username
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -26,7 +26,3 @@ def create_user_profile(sender, instance, created, **kwargs):
             is_staff=instance.is_staff,
             is_active=instance.is_active,
         )
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()

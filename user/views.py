@@ -1,17 +1,11 @@
-from pstats import Stats
-from django.shortcuts import render
 from user.models import Profile
 from user.serializers import UserSerializer, DefaultUserSerializer
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.contrib.auth.models import User
-from rest_framework import viewsets, permissions, status, generics
-from rest_framework import authentication 
-from rest_framework.authtoken.models import Token
-from rest_framework.views import APIView 
+from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from .permissions import IsAdminOrOwnerUser
+from datetime import datetime
 
 class DefaultViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -40,6 +34,50 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
 
         return Response(serializer.data)
+     
+    """
+    Update User instance
+    """
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        profile = self.get_object()
+        instance = profile.user
+        serializer = DefaultUserSerializer(
+            instance, data=request.data, partial=partial)
+        
+        if serializer.is_valid(raise_exception=True):
+            return self.perform_update(serializer, request, *args, **kwargs)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+    
+    def perform_update(self, serializer, request, *args, **kwargs):
+        
+        profile_serializer = self.update_profile(request, *args, **kwargs)
+        
+        if profile_serializer.is_valid():
+            profile_serializer.save()
+            serializer.save()
+            return Response(profile_serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update_profile(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        
+        if 'birth_date' in request.data:
+            date = datetime.strptime(
+                request.data['birth_date'], "%d/%m/%Y").date()
+            
+            request.data['birth_date'] = date
+            
+        serializer = UserSerializer(instance, data=request.data, partial=partial)
+        
+        return serializer
     
     def get_permissions(self):
         """
