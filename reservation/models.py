@@ -13,21 +13,24 @@ class Reservation(models.Model):
         User, 
         on_delete=models.DO_NOTHING,
         default=None,
-        null=True,
+        null=False,
         related_name='user'
     )
     experiment = models.ForeignKey(
         Experiment, 
         on_delete=models.DO_NOTHING,
         default=None,
-        null=True,
+        null=False,
         related_name='experiment'
     )
-    time =  models.DateField(null=True, blank=True)
+    start_datetime = models.DateField(null=True, blank=False)
+    end_datetime = models.DateField(null=True, blank=False)
+    showed_up = models.BooleanField(null=True, default=False)
+    finished = models.BooleanField(null=True, default=False)
     description = models.TextField(
         max_length=300, 
         blank=True
     )
     
     def __str__(self):
-        return self.description
+        return self.start_datetime
