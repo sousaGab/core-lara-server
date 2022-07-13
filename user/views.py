@@ -79,6 +79,21 @@ class UserViewSet(viewsets.ModelViewSet):
         
         return serializer
     
+    """
+    Destroy a model instance.
+    """
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = instance.user
+        self.perform_destroy(user, instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, user, instance):
+        user.delete()
+        #instance.delete()
+
+        
+    
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.

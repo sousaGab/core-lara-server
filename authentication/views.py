@@ -27,7 +27,7 @@ class LoginAPIView(GenericAPIView):
                 refresh = RefreshToken.for_user(user)
                 
                 response_data = {
-                        'user_id': user.id,
+                        'user_id': user.profile.id,
                         'username': user.username,
                         'refresh_token': str(refresh),
                         'access_token': str(refresh.access_token),
