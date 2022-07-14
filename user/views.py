@@ -92,8 +92,6 @@ class UserViewSet(viewsets.ModelViewSet):
         user.delete()
         #instance.delete()
 
-        
-    
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.

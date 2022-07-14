@@ -23,8 +23,8 @@ class Reservation(models.Model):
         null=False,
         related_name='experiment'
     )
-    start_datetime = models.DateField(null=True, blank=False)
-    end_datetime = models.DateField(null=True, blank=False)
+    start_datetime = models.DateTimeField(null=True, blank=False)
+    end_datetime = models.DateTimeField(null=True, blank=False)
     showed_up = models.BooleanField(null=True, default=False)
     finished = models.BooleanField(null=True, default=False)
     description = models.TextField(
@@ -33,4 +33,7 @@ class Reservation(models.Model):
     )
     
     def __str__(self):
-        return self.start_datetime
+        initial_datetime = "(start:%s"% self.start_datetime.strftime('%m/%d/%Y %H:%M')
+        finish_datetime = ",end:%s)"%  self.end_datetime.strftime('%m/%d/%Y %H:%M')
+        return  initial_datetime + finish_datetime
+        #return str(self.id)
