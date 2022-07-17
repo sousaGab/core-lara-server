@@ -10,6 +10,7 @@ from experiment.models import Experiment
 from experiment.serializers import ExperimentSerializer
 from .serializers import ReservationSerializer
 from datetime import datetime, timedelta
+from rest_framework.decorators import api_view
 
 
 def change_date_format(date):
@@ -62,3 +63,11 @@ class ReservationViewSet (viewsets.ModelViewSet):
             available = True
             
         return({'available': available, 'reservations': reservations})
+
+@api_view(['GET'])
+def get_by_user(request):
+    print('hehere')
+    print(request.data)
+    queryset = Reservation.objects.all().filter(user=request.data['user'])
+    serializer = ReservationSerializer(queryset, many=True)
+    return Response(serializer.data)
