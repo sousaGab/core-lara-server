@@ -4,7 +4,7 @@ from . import views
 from django.conf.urls import url
 
 router = routers.DefaultRouter()
-router.register(r'reservation', views.ReservationViewSet)
+router.register(r'resource', views.ReservationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

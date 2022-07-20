@@ -33,7 +33,7 @@ class Reservation(models.Model):
     )
     
     def __str__(self):
-        initial_datetime = "(start:%s"% self.start_datetime.strftime('%m/%d/%Y %H:%M')
-        finish_datetime = ",end:%s)"%  self.end_datetime.strftime('%m/%d/%Y %H:%M')
-        return  initial_datetime + finish_datetime
-        #return str(self.id)
+        #initial_datetime = "(start:%s"% self.start_datetime.strftime('%m/%d/%Y %H:%M')
+        #finish_datetime = ",end:%s)"%  self.end_datetime.strftime('%m/%d/%Y %H:%M')
+        #return  initial_datetime + finish_datetime
+        return str(self.id)
