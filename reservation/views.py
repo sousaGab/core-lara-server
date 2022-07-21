@@ -24,21 +24,12 @@ class ReservationViewSet (viewsets.ModelViewSet):
     serializer_class = ReservationSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend]
-    search_fields = ['user_id', 'experiment']
+    filter_fields = ['user', 'experiment']
     
     def list(self, request, *args, **kwargs):
         
         queryset = self.filter_queryset(self.get_queryset())
-        
-        #print(queryset)
-        print('prev')
-        print('-'*100)
-
-        #queryset = self.filterParams(request, queryset)
-        
-        print('-'*100)
-        print('after')
-        #print(queryset)
+        queryset = self.filterDateParams(request, queryset)
         
         serializer = self.get_serializer(queryset, many=True)
         page = self.paginate_queryset(queryset)
@@ -51,27 +42,23 @@ class ReservationViewSet (viewsets.ModelViewSet):
 
         return Response(serializer.data)
     
-    def filterParams(self, request, queryset):
-        qs = queryset
-        user = request.query_params.get('user') 
+    def filterDateParams(self, request, queryset):
         
-        if user:
-            print(qs)
-            qs.filter(Q(finished=True))
-            print(qs)
+        start = '2000-01-01T00:00:00'
+        end = datetime.today()
+
+        if request.query_params.get('start_datetime'):
+            start = change_date_format(request.query_params['start_datetime'])
         
-        if request.query_params.get('experiment'):
-            qs.filter(experiment_id = request.query_params.get('experiment'))
+        if request.query_params.get('end_datetime'):
+            end = change_date_format(request.query_params['end_datetime'])
+        
+        queryset = queryset.filter(
+            Q(start_datetime__range=[start, end]) |
+            Q(end_datetime__range=[start, end])
+        )
             
-        #if request.query_params.get('start_datetime') and request.query_params.get('end_datetime'):
-        #    queryset.filter(Q(start_datetime__range=[start, end]) |
-        ##    Q(end_datetime__range=[start, end]))
-        
-        # st, none
-        
-        # none, end
-            
-        return qs
+        return queryset
     
     """
     Create a model instance.
@@ -167,26 +154,6 @@ class ReservationViewSet (viewsets.ModelViewSet):
         
         return({'available': available, 'reservations': reservations})
 
-
-def filterParams(request, queryset):
-    qs = queryset
-    user = request.query_params.get('user') 
-    
-    if user:
-        qs.filter(user=user)
-    
-    if request.query_params.get('experiment'):
-        qs.filter(experiment_id = request.query_params.get('experiment'))
-        
-    #if request.query_params.get('start_datetime') and request.query_params.get('end_datetime'):
-    #    queryset.filter(Q(start_datetime__range=[start, end]) |
-    ##    Q(end_datetime__range=[start, end]))
-    
-    # st, none
-    
-    # none, end
-        
-    return qs
 
 @api_view(['GET'])
 def get_by_user(request):
