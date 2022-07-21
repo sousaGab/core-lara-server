@@ -96,15 +96,15 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """    
-        any_methods = ['create']
-        owner_methods = ['retrieve', 'partial_update', 'update', 'destroy']
-        admin_methods = ['list']
+        allow_any = ['create']
+        allow_owner = ['retrieve', 'partial_update', 'update', 'destroy']
+        allow_admin = ['list']
         
-        if self.action in any_methods:
+        if self.action in allow_any:
             permission_classes = [permissions.AllowAny]
-        elif self.action in owner_methods:
+        elif self.action in allow_owner:
             permission_classes = [IsAdminOrOwnerUser]
-        elif self.action in admin_methods:
+        elif self.action in allow_admin:
             permission_classes = [permissions.IsAdminUser]
             
         return [permission() for permission in permission_classes]

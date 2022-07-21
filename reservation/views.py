@@ -1,18 +1,14 @@
-import time
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
 from django.db.models import Q
 from .models import Reservation
-from django.contrib.auth.models import User
-from experiment.models import Experiment
-from experiment.serializers import ExperimentSerializer
 from .serializers import ReservationSerializer
-from datetime import datetime, timedelta
+from datetime import datetime
 from rest_framework.decorators import api_view
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
+from .permissions import IsAdminOrOwnerUser
 
 
 def change_date_format(date):
@@ -153,6 +149,25 @@ class ReservationViewSet (viewsets.ModelViewSet):
             available = True
         
         return({'available': available, 'reservations': reservations})
+    
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """    
+        allow_any = ['list', 'retrieve']
+        allow_auth = ['create']
+        allow_owner_or_admin = ['partial_update', 'update', 'destroy']
+        
+        if self.action in allow_any:
+            permission_classes = [permissions.AllowAny]
+            
+        elif self.action in allow_auth:
+            permission_classes = [permissions.IsAuthenticated]
+            
+        elif self.action in allow_owner_or_admin:
+            permission_classes = [IsAdminOrOwnerUser]
+            
+        return [permission() for permission in permission_classes]
 
 
 @api_view(['GET'])
