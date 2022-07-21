@@ -4,7 +4,7 @@ from .views import ExperimentViewSet
 from django.conf.urls import url
 
 router = routers.DefaultRouter()
-router.register(r'', ExperimentViewSet)
+router.register(r'resource', ExperimentViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
