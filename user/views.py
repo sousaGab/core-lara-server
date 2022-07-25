@@ -58,7 +58,7 @@ class UserViewSet(viewsets.ModelViewSet):
         
         profile_serializer = self.update_profile(request, *args, **kwargs)
         
-        if profile_serializer.is_valid():
+        if profile_serializer.is_valid(raise_exception=True):
             profile_serializer.save()
             serializer.save()
             return Response(profile_serializer.data, status=status.HTTP_200_OK)
