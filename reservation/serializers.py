@@ -1,4 +1,3 @@
-import this
 from .models import Reservation
 from rest_framework import serializers
 

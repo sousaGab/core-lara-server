@@ -63,6 +63,8 @@ class RegisterAPIView(GenericAPIView):
     
 def update_profile(profile, validated_data):
     
+    validated_data._mutable = True
+    
     if 'birth_date' in validated_data:
         validated_data['birth_date'] = datetime.strptime(
             validated_data['birth_date'], "%d/%m/%Y")

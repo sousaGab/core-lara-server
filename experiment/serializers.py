@@ -1,4 +1,3 @@
-import this
 from .models import Experiment
 from rest_framework import serializers
 

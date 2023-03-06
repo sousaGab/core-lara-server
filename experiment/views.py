@@ -6,6 +6,6 @@ from .permissions import IsAdminOrReadOnly
 
 class ExperimentViewSet (viewsets.ModelViewSet):
     
-    queryset = Experiment.objects.all()
+    queryset = Experiment.objects.get_queryset().order_by('id')
     serializer_class = ExperimentSerializer
     permission_classes = [IsAdminOrReadOnly]
