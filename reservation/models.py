@@ -11,14 +11,14 @@ class Reservation(models.Model):
     
     user = models.ForeignKey(
         User, 
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         default=None,
         null=False,
         related_name='user'
     )
     experiment = models.ForeignKey(
         Experiment, 
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
         default=None,
         null=False,
         related_name='experiment'

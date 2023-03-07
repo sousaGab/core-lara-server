@@ -6,21 +6,13 @@ from experiment.models import Experiment
 from django.contrib.auth.models import User
 import json
 
-'''
-[X] GET 
-[X] POST 
-[X] PUT
-[ ] PATCH
-[ ] DELETE
-'''
-        
-
 class TestViews(APITestCase):
     
     def setUp(self):
         
         self.client = APIClient()
         self.list_url = reverse('Experiments-list')
+        
         self.experiment_1 = Experiment.objects.create(
             name= 'Experiment_1', 
             type='Web',
@@ -28,15 +20,19 @@ class TestViews(APITestCase):
             location= 'Test Location', 
             institution= 'Fantasy Institution'
         )
+        
         self.normal_user = User.objects.create_user(
             username= 'normal_user',
             password='P4ssword@321'
         )
+        
         self.admin_user = User.objects.create_superuser(
             username= 'admin_user',
             password='Admin@321'
         )
+        
         self.amount_of_experiments = Experiment.objects.all().count()
+        
         self.new_data = {
             'name': 'Experiment_2',
             'type':'Web',
@@ -44,12 +40,17 @@ class TestViews(APITestCase):
             'location': 'Test Location', 
             'institution': 'Fantasy Institution'
         }
+        
         self.update_data = {
             'name': 'Experiment_1',
             'type':'Physical',
             'description': 'Some Description',
             'location': 'Test Location', 
             'institution': 'Fantasy Institution'
+        }
+        
+        self.path_data = {
+            'name': 'Experiment'
         }
         
         
@@ -131,5 +132,68 @@ class TestViews(APITestCase):
         self.client.force_authenticate(user=None)
     
     #PATCH   
-        
+    def test_experiment_PATCH_without_authorization(self):
+        '''
+        This tests whether sending PATCH request in experiment without authorization is not allowed
+        '''
+        url = self.list_url + str(self.experiment_1.pk)+ '/'
+        response = self.client.patch(url, data=self.path_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
     
+    def test_experiment_PATCH_without_permission(self):
+        '''
+        This tests whether sending PATCH request in experiment without permission is not allowed
+        '''
+        self.client.force_authenticate(user=self.normal_user)
+        
+        url = self.list_url + str(self.experiment_1.pk)+ '/'
+        response = self.client.patch(url, data=self.path_data)
+        
+        expected_response_data = {'detail': ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')}
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data, expected_response_data)
+        self.client.force_authenticate(user=None)
+        
+    def test_experiment_PATCH(self):
+        '''
+        This tests whether sending PATCH request in experiment with permission is successful
+        '''
+        self.client.force_authenticate(user=self.admin_user)
+        url = self.list_url + str(self.experiment_1.pk)+ '/'
+        response = self.client.patch(url, data=self.path_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.force_authenticate(user=None)  
+    
+    #DELETE   
+    def test_experiment_DELETE_without_authorization(self):
+        '''
+        This tests whether sending DELETE request in experiment without authorization is not allowed
+        '''
+        url = self.list_url + str(self.experiment_1.pk)+ '/'
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_experiment_DELETE_without_permission(self):
+        '''
+        This tests whether sending DELETE request in experiment without permission is not allowed
+        '''
+        self.client.force_authenticate(user=self.normal_user)
+        
+        url = self.list_url + str(self.experiment_1.pk)+ '/'
+        response = self.client.delete(url)
+        
+        expected_response_data = {'detail': ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')}
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data, expected_response_data)
+        self.client.force_authenticate(user=None)
+        
+    def test_experiment_DELETE(self):
+        '''
+        This tests whether sending DELETE request in experiment with permission is successful
+        '''
+        self.client.force_authenticate(user=self.admin_user)
+        url = self.list_url + str(self.experiment_1.pk)+ '/'
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Experiment.objects.all().count(), self.amount_of_experiments - 1)
+        self.client.force_authenticate(user=None)
