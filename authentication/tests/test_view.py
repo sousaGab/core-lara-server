@@ -73,7 +73,7 @@ class TestViews(APITestCase):
         amount_of_users = User.objects.all().count()
         response = self.client.post(self.register_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEquals(User.objects.all().count(), amount_of_users)
+        self.assertEqual(User.objects.all().count(), amount_of_users)
         
     def test_token_verify(self):
         '''
