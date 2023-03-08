@@ -1,4 +1,3 @@
-from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import viewsets, permissions, status
@@ -16,11 +15,11 @@ def change_date_format(date):
     return res
 
 class ReservationViewSet (viewsets.ModelViewSet):
-    queryset = Reservation.objects.all()
+    queryset = Reservation.objects.all().order_by('start_datetime')
     serializer_class = ReservationSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend]
-    filter_fields = ['user', 'experiment']
+    filterset_fields  = ['user', 'experiment']
     
     def list(self, request, *args, **kwargs):
         
@@ -168,10 +167,3 @@ class ReservationViewSet (viewsets.ModelViewSet):
             permission_classes = [IsAdminOrOwnerUser]
             
         return [permission() for permission in permission_classes]
-
-
-@api_view(['GET'])
-def get_by_user(request):
-    queryset = Reservation.objects.all().filter(user=request.data['user'])
-    serializer = ReservationSerializer(queryset, many=True)
-    return Response(serializer.data)

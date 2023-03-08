@@ -10,4 +10,4 @@ class TestUrls(APITestCase):
         self.list_url = reverse('Experiments-list')
         
     def test_list_url_resolves(self):
-        self.assertEquals(resolve(self.list_url).func.__name__, ExperimentViewSet.__name__)
+        self.assertEqual(resolve(self.list_url).func.__name__, ExperimentViewSet.__name__)

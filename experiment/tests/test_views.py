@@ -5,7 +5,6 @@ from django.urls import reverse
 from experiment.models import Experiment
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
-import json
 
 class TestViews(APITestCase):
     
