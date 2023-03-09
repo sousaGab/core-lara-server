@@ -7,17 +7,7 @@ from django.contrib.auth.models import User
 from experiment.models import Experiment
 from reservation.models import Reservation
 from django.forms.models import model_to_dict
-from collections import OrderedDict
-from django.core.serializers import serialize
 
-
-'''
-[ ] GET
-[ ] POST
-[ ] PUT
-[ ] PATCH
-[ ] DELETE
-'''
 
 class TestViews(APITestCase):
     
