@@ -23,8 +23,8 @@ class Reservation(models.Model):
         null=False,
         related_name='experiment'
     )
-    start_datetime = models.DateTimeField(null=True, blank=False)
-    end_datetime = models.DateTimeField(null=True, blank=False)
+    start_datetime = models.DateTimeField(null=False, blank=False)
+    end_datetime = models.DateTimeField(null=False, blank=False)
     showed_up = models.BooleanField(null=True, default=False)
     finished = models.BooleanField(null=True, default=False)
     description = models.TextField(

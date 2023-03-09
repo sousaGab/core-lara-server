@@ -60,19 +60,26 @@ class ReservationViewSet (viewsets.ModelViewSet):
     """
     def create(self, request, *args, **kwargs):
         
-        if 'start_datetime' in request.data:
-            request.data['start_datetime'] = change_date_format(request.data['start_datetime'])
-
-        if 'end_datetime' in request.data:
-            request.data['end_datetime'] = change_date_format(request.data['end_datetime'])
+        data = request.data
+        data._mutable = True
         
-        serializer = self.get_serializer(data=request.data)
+        required_fields = ['experiment', 'user', 'start_datetime', 'end_datetime']
+        
+        for field in required_fields:
+        
+            if not(field in data):
+                response_error = {field: ["This field is required."]}
+                return  Response({'error': response_error}, status=status.HTTP_400_BAD_REQUEST)
+        
+        data['start_datetime'] = change_date_format(data['start_datetime'])
+        data['end_datetime'] = change_date_format(data['end_datetime'])
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         
         experiment_availability = self.availability(
-            experiment = request.data['experiment'], 
-            start_datetime = request.data['start_datetime'], 
-            end_datetime = request.data['end_datetime'],
+            experiment = data['experiment'], 
+            start_datetime = data['start_datetime'], 
+            end_datetime = data['end_datetime'],
         )
 
         if experiment_availability['available']:
@@ -91,20 +98,22 @@ class ReservationViewSet (viewsets.ModelViewSet):
     Update a model instance.
     """
     def update(self, request, *args, **kwargs):
+        data = request.data
+        data._mutable = True
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         st_date = instance.start_datetime
         end_date = instance.end_datetime
         
-        if 'start_datetime' in request.data:
-            request.data['start_datetime'] = change_date_format(request.data['start_datetime'])
-            st_date = request.data['start_datetime']
+        if 'start_datetime' in data:
+            data['start_datetime'] = change_date_format(data['start_datetime'])
+            st_date = data['start_datetime']
 
-        if 'end_datetime' in request.data:
-            request.data['end_datetime'] = change_date_format(request.data['end_datetime'])
-            end_date = request.data['end_datetime']
+        if 'end_datetime' in data:
+            data['end_datetime'] = change_date_format(data['end_datetime'])
+            end_date = data['end_datetime']
         
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
         
         experiment_availability = self.availability(
@@ -131,18 +140,43 @@ class ReservationViewSet (viewsets.ModelViewSet):
         return  Response({'error': response_error}, status=status.HTTP_400_BAD_REQUEST)
         
 
-    def availability(self, instance=None,experiment=None, 
+    def availability(self, instance=None, experiment=None, 
                      start_datetime=None, end_datetime=None):  
+        
         available = False
         start = start_datetime
         end = end_datetime
         
         if instance : experiment = instance.experiment_id
-            
+        '''
         reservations = Reservation.objects.filter(Q(experiment_id=experiment)&(
             Q(start_datetime__range=[start, end]) |
             Q(end_datetime__range=[start, end])
         ))
+         reservations = Reservation.objects.filter(
+            (Q(experiment_id=experiment)&(
+                Q(start_datetime__range=[start, end]) |
+                Q(end_datetime__range=[start, end])
+            )
+            )|(Q(experiment_id=experiment)&(
+                Q(start_datetime__lte=start)&
+                Q(end_datetime__gte=end)
+            ))
+        )
+        
+        '''
+        reservations = Reservation.objects.filter(
+            (Q(experiment_id=experiment)&(
+                Q(start_datetime__range=[start, end]) |
+                Q(end_datetime__range=[start, end])
+            )
+            )|(Q(experiment_id=experiment)&(
+                Q(start_datetime__lte=start)&
+                Q(end_datetime__gte=end)
+            ))
+        )
+        
+        #print('>'*100, '\n', reservations, '\n')
         
         if (not reservations) or (len(reservations) == 1 and reservations[0] == instance):
             available = True
