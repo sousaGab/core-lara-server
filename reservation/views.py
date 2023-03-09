@@ -99,7 +99,10 @@ class ReservationViewSet (viewsets.ModelViewSet):
     """
     def update(self, request, *args, **kwargs):
         data = request.data
-        data._mutable = True
+        if hasattr(data, '_mutable'):
+        #if request.method == 'PUT':
+            data._mutable = True
+            
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         st_date = instance.start_datetime
@@ -148,23 +151,7 @@ class ReservationViewSet (viewsets.ModelViewSet):
         end = end_datetime
         
         if instance : experiment = instance.experiment_id
-        '''
-        reservations = Reservation.objects.filter(Q(experiment_id=experiment)&(
-            Q(start_datetime__range=[start, end]) |
-            Q(end_datetime__range=[start, end])
-        ))
-         reservations = Reservation.objects.filter(
-            (Q(experiment_id=experiment)&(
-                Q(start_datetime__range=[start, end]) |
-                Q(end_datetime__range=[start, end])
-            )
-            )|(Q(experiment_id=experiment)&(
-                Q(start_datetime__lte=start)&
-                Q(end_datetime__gte=end)
-            ))
-        )
         
-        '''
         reservations = Reservation.objects.filter(
             (Q(experiment_id=experiment)&(
                 Q(start_datetime__range=[start, end]) |
@@ -175,8 +162,6 @@ class ReservationViewSet (viewsets.ModelViewSet):
                 Q(end_datetime__gte=end)
             ))
         )
-        
-        #print('>'*100, '\n', reservations, '\n')
         
         if (not reservations) or (len(reservations) == 1 and reservations[0] == instance):
             available = True
