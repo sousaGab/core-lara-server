@@ -8,7 +8,7 @@ from .permissions import IsAdminOrOwnerUser
 from datetime import datetime
 
 class DefaultViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
     serializer_class = DefaultUserSerializer
     permission_classes = [permissions.IsAuthenticated]
     
@@ -17,7 +17,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.all().order_by('id')
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAdminUser,)
     pagination_class = PageNumberPagination
