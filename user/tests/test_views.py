@@ -1,19 +1,11 @@
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
-from datetime import datetime
 from django.urls import reverse
+from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
 from user.models import Profile
-from django.forms.models import model_to_dict
-
-'''
-[X] GET
-[X] POST
-[ ] PUT
-[ ] PATCH
-[ ] DELETE
-'''
+from datetime import datetime
 
 class TestViews(APITestCase):
     
@@ -35,8 +27,6 @@ class TestViews(APITestCase):
         self.profile_1.birth_date = '2000-01-01'
         self.profile_1.save()
         
-        
-        
         # create user
         self.user_2 = User.objects.create_user(
             username= 'user_2',
@@ -55,6 +45,8 @@ class TestViews(APITestCase):
             password='Admin@321'
         )
         
+        self.amount_of_users =  User.objects.all().count()
+        
         self.new_data = {
             'username': 'example_test',
             'name': 'user',
@@ -70,6 +62,10 @@ class TestViews(APITestCase):
             'email': 'emailupdated@test.com.com',
             'location': 'Some Address there',
             'birth_date': '01/01/2000'
+        }
+        
+        self.patch_data = {
+            'email': 'updated@test.com.com',
         }
         
     
@@ -163,7 +159,7 @@ class TestViews(APITestCase):
         
     def test_user_PUT(self):
         '''
-        This tests whether sending PUT request iin user with permission is successful
+        This tests whether sending PUT request in user with permission is successful
         '''
         self.client.force_authenticate(user=self.normal_user)
         previous_profile = self.profile_1
@@ -176,10 +172,88 @@ class TestViews(APITestCase):
         self.assertTrue(data_is_equal)
         self.client.force_authenticate(user=None)
         
+    def test_user_PUT_without_data(self):
+        '''
+        This tests whether sending PUT request in user  without data is not allowed
+        '''
+        self.client.force_authenticate(user=self.normal_user)
+        url = self.list_url + str(self.normal_user.pk) + '/'
+        response = self.client.put(url, data = {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.client.force_authenticate(user=None)
+        
     #PATCH
+    def test_user_PATCH_without_authorization(self):
+        '''
+        This tests whether sending PATCH request in user without authorization is not allowed
+        '''
+        url = self.list_url + str(self.user_2.pk) + '/'
+        response = self.client.patch(url, data = self.patch_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_user_PATCH_without_permission(self):
+        '''
+        This tests whether sending PATCH request in user without permission is not allowed
+        '''
+        self.client.force_authenticate(user=self.normal_user)
+        url = self.list_url + str(self.user_2.pk) + '/'
+        expected_response_data = {'detail': ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')}
+        response = self.client.patch(url, data = self.patch_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data, expected_response_data)
+        self.client.force_authenticate(user=None)
+        
+    def test_user_PATCH(self):
+        '''
+        This tests whether sending PATCH request in user with permission is successful
+        '''
+        self.client.force_authenticate(user=self.normal_user)
+        previous_profile = self.profile_1
+        url = self.list_url + str(self.normal_user.pk) + '/'
+        response = self.client.patch(url, data = self.patch_data)
+        updated_profile = Profile.objects.get(user = self.normal_user)
+        data_is_equal = self.compare_data(model_to_dict(updated_profile), response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotEqual(model_to_dict(previous_profile), model_to_dict(updated_profile))
+        self.assertTrue(data_is_equal)
+        self.client.force_authenticate(user=None)
+        
     #DELETE
+    def test_user_DELETE_without_authorization(self):
+        '''
+        This tests whether sending DELETE request in user without authorization is not allowed
+        '''
+        url = self.list_url + str(self.user_2.pk) + '/'
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(User.objects.all().count(), self.amount_of_users)
     
+    def test_user_DELETE_without_permission(self):
+        '''
+        This tests whether sending DELETE request in user without permission is not allowed
+        '''
+        self.client.force_authenticate(user=self.normal_user)
+        
+        url = self.list_url + str(self.user_2.pk) + '/'
+        response = self.client.delete(url)
+        
+        expected_response_data = {'detail': ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')}
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data, expected_response_data)
+        self.assertEqual(User.objects.all().count(), self.amount_of_users)
+        self.client.force_authenticate(user=None)
     
+    def test_user_DELETE(self):
+        '''
+        This tests whether sending DELETE request in user with permission is successful
+        '''
+        self.client.force_authenticate(user=self.normal_user)
+        url = self.list_url + str(self.normal_user.pk) + '/'
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
+        self.assertEqual(User.objects.all().count(), self.amount_of_users -1)
+        self.client.force_authenticate(user=None)
+        
     #Auxiliary functions
     def compare_data(self, data_1, data_2):
         

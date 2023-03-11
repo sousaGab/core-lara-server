@@ -47,38 +47,38 @@ class TestViews(APITestCase):
         self.reservation_1 = Reservation.objects.create(
             user= self.user_1,
             experiment= self.experiment_1,
-            start_datetime = "2023-05-17T12:21:00",
-            end_datetime = "2023-05-17T12:30:00"
+            start_datetime = '2023-05-17T12:21:00',
+            end_datetime = '2023-05-17T12:30:00'
         ) 
         self.reservation_2 = Reservation.objects.create(
             user= self.user_2,
             experiment= self.experiment_2,
-            start_datetime = "2023-05-17T12:21:00",
-            end_datetime = "2023-05-17T12:30:00"
+            start_datetime = '2023-05-17T12:21:00',
+            end_datetime = '2023-05-17T12:30:00'
         )
         self.reservation_3 = Reservation.objects.create(
             user= self.user_1,
             experiment= self.experiment_2,
-            start_datetime = "2023-05-18T12:21:00",
-            end_datetime = "2023-05-18T12:30:00"
+            start_datetime = '2023-05-18T12:21:00',
+            end_datetime = '2023-05-18T12:30:00'
         )
         
         self.new_data = {
-            "user": str(self.user_1.pk),
-            "experiment": str(self.experiment_1.pk),
-            "start_datetime": "20/4/2023 12:21",
-            "end_datetime": "20/4/2023 12:30"
+            'user': str(self.user_1.pk),
+            'experiment': str(self.experiment_1.pk),
+            'start_datetime': '20/4/2023 12:21',
+            'end_datetime': '20/4/2023 12:30'
         }
         
         self.update_data = {
-            "user": str(self.reservation_1.user.pk),
-            "experiment": str(self.reservation_1.experiment.pk),
-            "start_datetime": "17/05/2023 12:00",
-            "end_datetime": "17/05/2023 13:00"
+            'user': str(self.reservation_1.user.pk),
+            'experiment': str(self.reservation_1.experiment.pk),
+            'start_datetime': '17/05/2023 12:00',
+            'end_datetime': '17/05/2023 13:00'
         }
         
         self.patch_data = {
-           "start_datetime": "17/05/2023 12:15", 
+           'start_datetime': '17/05/2023 12:15', 
         }
         
         self.amount_of_reservations = Reservation.objects.all().count()
@@ -132,10 +132,10 @@ class TestViews(APITestCase):
         
         #Test with the same data in another reservation already registered
         data = {
-            "user": str(self.reservation_1.user.pk),
-            "experiment": str(self.reservation_1.experiment.pk),
-            "start_datetime": self.change_br_format(self.reservation_1.start_datetime),
-            "end_datetime": self.change_br_format(self.reservation_1.end_datetime)
+            'user': str(self.reservation_1.user.pk),
+            'experiment': str(self.reservation_1.experiment.pk),
+            'start_datetime': self.change_br_format(self.reservation_1.start_datetime),
+            'end_datetime': self.change_br_format(self.reservation_1.end_datetime)
         }
         response = self.client.post(self.reservation_view_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -143,10 +143,10 @@ class TestViews(APITestCase):
         
         #Test with the date within the range of another reservation already registered
         data = {
-            "user": str(self.reservation_1.user.pk),
-            "experiment": str(self.reservation_1.experiment.pk),
-            "start_datetime": "17/05/2023 12:22",
-            "end_datetime": "17/05/2023 12:29"
+            'user': str(self.reservation_1.user.pk),
+            'experiment': str(self.reservation_1.experiment.pk),
+            'start_datetime': '17/05/2023 12:22',
+            'end_datetime': '17/05/2023 12:29'
         }
         response = self.client.post(self.reservation_view_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -154,10 +154,10 @@ class TestViews(APITestCase):
         
         #Test with the start_datetime within the range of another reservation already registered
         data = {
-            "user": str(self.reservation_1.user.pk),
-            "experiment": str(self.reservation_1.experiment.pk),
-            "start_datetime": "17/05/2023 12:22",
-            "end_datetime": "17/05/2023 13:00"
+            'user': str(self.reservation_1.user.pk),
+            'experiment': str(self.reservation_1.experiment.pk),
+            'start_datetime': '17/05/2023 12:22',
+            'end_datetime': '17/05/2023 13:00'
         }
         response = self.client.post(self.reservation_view_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -166,10 +166,10 @@ class TestViews(APITestCase):
         
         #Test with the end_datetime within the range of another reservation already registered
         data = {
-            "user": str(self.reservation_1.user.pk),
-            "experiment": str(self.reservation_1.experiment.pk),
-            "start_datetime": "17/05/2023 12:00",
-            "end_datetime": "17/05/2023 12:25"
+            'user': str(self.reservation_1.user.pk),
+            'experiment': str(self.reservation_1.experiment.pk),
+            'start_datetime': '17/05/2023 12:00',
+            'end_datetime': '17/05/2023 12:25'
         }
         response = self.client.post(self.reservation_view_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -236,40 +236,40 @@ class TestViews(APITestCase):
         url = self.reservation_view_url + str(self.reservation_3.pk)+ '/'
         #Test with the same data in another reservation already registered
         data = {
-            "user": str(self.user_1.pk),
-            "experiment": str(self.reservation_3.experiment.pk),
-            "start_datetime": self.change_br_format(self.reservation_2.start_datetime),
-            "end_datetime": self.change_br_format(self.reservation_2.end_datetime)
+            'user': str(self.user_1.pk),
+            'experiment': str(self.reservation_3.experiment.pk),
+            'start_datetime': self.change_br_format(self.reservation_2.start_datetime),
+            'end_datetime': self.change_br_format(self.reservation_2.end_datetime)
         }
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
      
         #Test with the date within the range of another reservation already registered
         data = {
-            "user": str(self.user_1.pk),
-            "experiment": str(self.reservation_3.experiment.pk),
-            "start_datetime": "17/05/2023 12:22",
-            "end_datetime": "17/05/2023 12:29",
+            'user': str(self.user_1.pk),
+            'experiment': str(self.reservation_3.experiment.pk),
+            'start_datetime': '17/05/2023 12:22',
+            'end_datetime': '17/05/2023 12:29',
         }
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
           
         #Test with the start_datetime within the range of another reservation already registered
         data = {
-            "user": str(self.user_1.pk),
-            "experiment": str(self.reservation_3.experiment.pk),
-            "start_datetime": "17/05/2023 12:22",
-            "end_datetime": "17/05/2023 13:00"
+            'user': str(self.user_1.pk),
+            'experiment': str(self.reservation_3.experiment.pk),
+            'start_datetime': '17/05/2023 12:22',
+            'end_datetime': '17/05/2023 13:00'
         }
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
         #Test with the end_datetime within the range of another reservation already registered
         data = {
-            "user": str(self.user_1.pk),
-            "experiment": str(self.reservation_3.experiment.pk),
-            "start_datetime": "17/05/2023 12:00",
-            "end_datetime": "17/05/2023 12:25"
+            'user': str(self.user_1.pk),
+            'experiment': str(self.reservation_3.experiment.pk),
+            'start_datetime': '17/05/2023 12:00',
+            'end_datetime': '17/05/2023 12:25'
         }
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -328,30 +328,30 @@ class TestViews(APITestCase):
         
         #Test with the same data in another reservation already registered
         data = {
-            "start_datetime": self.change_br_format(self.reservation_2.start_datetime),
-            "end_datetime": self.change_br_format(self.reservation_2.end_datetime)
+            'start_datetime': self.change_br_format(self.reservation_2.start_datetime),
+            'end_datetime': self.change_br_format(self.reservation_2.end_datetime)
         }
         response = self.client.patch(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
         #Test with the date within the range of another reservation already registered
         data = {
-            "start_datetime": "17/05/2023 12:22",
-            "end_datetime": "17/05/2023 12:29",
+            'start_datetime': '17/05/2023 12:22',
+            'end_datetime': '17/05/2023 12:29',
         }
         response = self.client.patch(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
         #Test with the start_datetime within the range of another reservation already registered
         data = {
-            "start_datetime": "17/05/2023 12:22"
+            'start_datetime': '17/05/2023 12:22'
         }
         response = self.client.patch(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
         #Test with the end_datetime within the range of another reservation already registered
         data = {
-            "end_datetime": "17/05/2023 12:25"
+            'end_datetime': '17/05/2023 12:25'
         }
         response = self.client.patch(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -366,6 +366,7 @@ class TestViews(APITestCase):
         url = self.reservation_view_url + str(self.reservation_1.pk)+ '/'
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(Reservation.objects.all().count(), self.amount_of_reservations)
     
     def test_reservation_DELETE_without_permission(self):
         '''
@@ -379,6 +380,7 @@ class TestViews(APITestCase):
         expected_response_data = {'detail': ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')}
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data, expected_response_data)
+        self.assertEqual(Reservation.objects.all().count(), self.amount_of_reservations)
         self.client.force_authenticate(user=None)
     
     def test_reservation_DELETE(self):
@@ -389,7 +391,7 @@ class TestViews(APITestCase):
         url = self.reservation_view_url + str(self.reservation_1.pk)+ '/'
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Experiment.objects.all().count(), self.amount_of_reservations - 1)
+        self.assertEqual(Reservation.objects.all().count(), self.amount_of_reservations - 1)
         self.client.force_authenticate(user=None)
     
     
@@ -413,5 +415,5 @@ class TestViews(APITestCase):
         return res
     
     def change_br_format(self, date):
-        res = self.change_date_format(date).strftime("%d/%m/%Y %H:%M")
+        res = self.change_date_format(date).strftime('%d/%m/%Y %H:%M')
         return res

@@ -53,12 +53,12 @@ class TestViews(APITestCase):
         '''
         
         data = {
-            "username": "example_test",
-            "name": "user",
-            "email": "email@test.com.com",
-            "location": "Some Address here",
-            "birth_date": "01/01/2000",
-            "password": "P4ssword@321"
+            'username': 'example_test',
+            'name': 'user',
+            'email': 'email@test.com.com',
+            'location': 'Some Address here',
+            'birth_date': '01/01/2000',
+            'password': 'P4ssword@321'
         }
         response = self.client.post(self.register_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

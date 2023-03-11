@@ -203,6 +203,7 @@ class TestViews(APITestCase):
         url = self.list_url + str(self.experiment_1.pk)+ '/'
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(Experiment.objects.all().count(), self.amount_of_experiments)
     
     def test_experiment_DELETE_without_permission(self):
         '''
@@ -216,6 +217,7 @@ class TestViews(APITestCase):
         expected_response_data = {'detail': ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')}
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data, expected_response_data)
+        self.assertEqual(Experiment.objects.all().count(), self.amount_of_experiments)
         self.client.force_authenticate(user=None)
         
     def test_experiment_DELETE(self):
