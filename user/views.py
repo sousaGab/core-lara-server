@@ -69,6 +69,9 @@ class UserViewSet(viewsets.ModelViewSet):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         
+        if hasattr(request.data, '_mutable'):
+            request.data._mutable = True
+        
         if 'birth_date' in request.data:
             date = datetime.strptime(
                 request.data['birth_date'], "%d/%m/%Y").date()

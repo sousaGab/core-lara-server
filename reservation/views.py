@@ -100,7 +100,6 @@ class ReservationViewSet (viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         data = request.data
         if hasattr(data, '_mutable'):
-        #if request.method == 'PUT':
             data._mutable = True
             
         partial = kwargs.pop('partial', False)
