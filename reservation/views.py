@@ -1,13 +1,11 @@
-from rest_framework import permissions
+from rest_framework import permissions, viewsets, permissions, status
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions, status
-from django.db.models import Q
-from .models import Reservation
-from .serializers import ReservationSerializer
-from datetime import datetime
-from rest_framework.decorators import api_view
 from django_filters.rest_framework import DjangoFilterBackend
-from .permissions import IsAdminOrOwnerUser
+from django.db.models import Q
+from reservation.serializers import ReservationSerializer
+from reservation.models import Reservation
+from reservation.permissions import IsAdminOrOwnerUser
+from datetime import datetime
 
 
 def change_date_format(date):
@@ -25,28 +23,24 @@ class ReservationViewSet (viewsets.ModelViewSet):
         
         queryset = self.filter_queryset(self.get_queryset())
         queryset = self.filterDateParams(request, queryset)
-        
-        serializer = self.get_serializer(queryset, many=True)
         page = self.paginate_queryset(queryset)
         
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-
+                
+        self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
     def filterDateParams(self, request, queryset):
         
         start = '2000-01-01T00:00:00'
         end = datetime.today()
+        params = request.query_params
 
-        if request.query_params.get('start_datetime'):
-            start = change_date_format(request.query_params['start_datetime'])
+        if params.get('start_datetime'): start = change_date_format(params['start_datetime'])
         
-        if request.query_params.get('end_datetime'):
-            end = change_date_format(request.query_params['end_datetime'])
+        if params.get('end_datetime'): end = change_date_format(params['end_datetime'])
         
         queryset = queryset.filter(
             Q(start_datetime__range=[start, end]) |

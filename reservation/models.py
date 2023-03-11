@@ -1,11 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from experiment.models import Experiment
-from datetime import datetime
-from django.db.models.fields import (
-    DateField, DateTimeField, DurationField, Field, IntegerField, TimeField,
-)
-from django.utils import timezone
 
 class Reservation(models.Model):
     
@@ -32,8 +27,4 @@ class Reservation(models.Model):
         blank=True
     )
     
-    def __str__(self):
-        #initial_datetime = "(start:%s"% self.start_datetime.strftime('%m/%d/%Y %H:%M')
-        #finish_datetime = ",end:%s)"%  self.end_datetime.strftime('%m/%d/%Y %H:%M')
-        #return  initial_datetime + finish_datetime
-        return str(self.id)
+    def __str__(self): return str(self.id)

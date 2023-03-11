@@ -45,7 +45,10 @@ class TestViews(APITestCase):
         }
         response = self.client.post(self.login_url, data=data) 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEquals(response.data, {'error': 'Invalid password'})
+        self.assertEqual(response.data, {'error': 'Invalid password'})
+        
+        response = self.client.post(self.login_url, data={}) 
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_register(self):
         '''

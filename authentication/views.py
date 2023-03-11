@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from pandas import Series
 from rest_framework.generics import GenericAPIView
 from rest_framework import response, status
 from .serializers import RegisterSerializer, LoginSerializer
@@ -12,37 +10,33 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class LoginAPIView(GenericAPIView):
     
     def post(self, request):
-        try:
-            data = request.data
-            serializer = LoginSerializer(data=data)
-            
-            if serializer.is_valid():
-                username = serializer.data['username']
-                password = serializer.data['password']
-                user = authenticate(username = username, password = password)
-                
-                if user is None:
-                    return response.Response({'error': 'Invalid password'}, status=status.HTTP_400_BAD_REQUEST)
-                    
-                refresh = RefreshToken.for_user(user)
-                
-                response_data = {
-                        'user_id': user.profile.id,
-                        'username': user.username,
-                        'refresh_token': str(refresh),
-                        'access_token': str(refresh.access_token),
-                }
-                return response.Response (
-                    {'success': 'Successfully login', 'data': response_data },
-                    status = status.HTTP_200_OK
-                )
-                
-            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        serializer = LoginSerializer(data=data)
         
-        except Exception as e :
-            print(e)
-
-
+        if serializer.is_valid():
+            username = serializer.data['username']
+            password = serializer.data['password']
+            user = authenticate(username = username, password = password)
+            
+            if user is None:
+                return response.Response({'error': 'Invalid password'}, status=status.HTTP_400_BAD_REQUEST)
+                
+            refresh = RefreshToken.for_user(user)
+            
+            response_data = {
+                    'user_id': user.profile.id,
+                    'username': user.username,
+                    'refresh_token': str(refresh),
+                    'access_token': str(refresh.access_token),
+            }
+            return response.Response (
+                {'success': 'Successfully login', 'data': response_data },
+                status = status.HTTP_200_OK
+            )
+        
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+       
 class RegisterAPIView(GenericAPIView):
     
     serializer_class=RegisterSerializer
@@ -73,8 +67,7 @@ def update_profile(profile, validated_data):
     exclude=[]
     for field in fields:
         field=field.name.split('.')[-1] #to get coulumn name
-        if field in exclude:
-           continue
-        exec("profile.%s = validated_data.get(field, profile.%s)"%(field,field))
+        if not (field in exclude):
+            exec("profile.%s = validated_data.get(field, profile.%s)"%(field,field))
     profile.save()
     return profile
