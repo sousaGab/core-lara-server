@@ -24,7 +24,6 @@ class UserViewSet(viewsets.ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
         page = self.paginate_queryset(queryset)
         
         if page is not None:
