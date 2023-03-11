@@ -7,7 +7,7 @@ from django.forms.models import model_to_dict
 
 '''
 [X] GET
-[ ] POST
+[X] POST
 [ ] PUT
 [ ] PATCH
 [ ] DELETE
@@ -34,6 +34,15 @@ class TestViews(APITestCase):
             username= 'admin_user',
             password='Admin@321'
         )
+        
+        self.new_data = {
+            "username": "example_test",
+            "name": "user",
+            "email": "email@test.com.com",
+            "location": "Some Address here",
+            "birth_date": "2000-01-01",
+            "password": "P4ssword@321"
+        }
     
     #GET
     def test_user_list_GET_without_authorization(self):
@@ -94,6 +103,14 @@ class TestViews(APITestCase):
         self.client.force_authenticate(user=None)
         
     #POST
+    def test_user_POST_is_not_allowed(self):
+        '''
+        This tests whether sending POST request in user is not allowed
+        '''
+        # This request is not allowed because users are created using registration request
+        response = self.client.post(self.list_url, self.new_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
     #PUT
     #PATCH
     #DELETE

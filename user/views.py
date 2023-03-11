@@ -14,12 +14,12 @@ class DefaultViewSet(viewsets.ModelViewSet):
     
 
 class UserViewSet(viewsets.ModelViewSet):
-    """
+    '''
     API endpoint that allows users to be viewed or edited.
-    """
+    '''
     queryset = Profile.objects.all().order_by('id')
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAdminUser,)
+    permission_classes = [permissions.IsAuthenticated]
     pagination_class = PageNumberPagination
     
     def list(self, request, *args, **kwargs):
@@ -35,9 +35,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
      
-    """
+    '''
     Update User instance
-    """
+    '''
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         profile = self.get_object()
@@ -79,9 +79,15 @@ class UserViewSet(viewsets.ModelViewSet):
         
         return serializer
     
-    """
+    def create(self, request, *args, **kwargs):
+        '''
+        This request is not allowed because users are created in registration request
+        '''
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+        
+    '''
     Destroy a model instance.
-    """
+    '''
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         user = instance.user
@@ -93,12 +99,13 @@ class UserViewSet(viewsets.ModelViewSet):
         #instance.delete()
 
     def get_permissions(self):
-        """
+        '''
         Instantiates and returns the list of permissions that this view requires.
-        """    
+        '''    
+       
         allow_any = ['create']
         allow_owner = ['retrieve', 'partial_update', 'update', 'destroy']
-        allow_admin = ['list']
+        allow_admin = ['list', 'create']
         
         if self.action in allow_any:
             permission_classes = [permissions.AllowAny]
