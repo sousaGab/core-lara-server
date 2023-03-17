@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'user.apps.UserConfig',
+    'authentication.apps.AuthenticationConfig',
     'experiment.apps.ExperimentConfig',
     'reservation.apps.ReservationConfig',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {
@@ -91,11 +93,12 @@ WSGI_APPLICATION = 'coreLaraServer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'lara-core-server',
-        'USER': 'root',
-        'PASSWORD': 'klk689423',
+        'NAME': 'db-name',
+        'USER': 'db-user',
+        'PASSWORD': 'db-password',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
