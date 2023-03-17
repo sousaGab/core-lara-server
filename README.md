@@ -1,11 +1,15 @@
-# LARA Core Server - API
+<div style="text-align: center; margin: 20px 0px">
+    <h1> LARA Core Server - API </h1>
+</div>
 
 <div id='start-of-project'/>
 
-<img  style="width:300px;" src="./assets/logo.png" alt="logo">
+<p align="center" width="100%">
+    <img  style=" align-self: center; width:300px;" src="./assets/logo.png" alt="logo">
+</p>
 
-> **LARA** (**Laboratório em Redes de Aprendizagem**), trata de um **AVA** com o objetivo de ser uma 
-plataforma educacional que relaciona recursos tecnológicos e métodos de ensino para aprimorar o processo de ensino de disciplinas do curso de Ciência da Computação.
+> **LARA** (**Laboratório em Redes de Aprendizagem**), trata de um **AVA** com o objetivo de ser uma
+> plataforma educacional que relaciona recursos tecnológicos e métodos de ensino para aprimorar o processo de ensino de disciplinas do curso de Ciência da Computação.
 
 ### Ajustes e melhorias
 
@@ -35,41 +39,41 @@ Para instalar o LARA Core Server, siga estas etapas:
 
 1. Crie o ambiente virtual:
 
-```
-virtualenv venv
-```
+    ```
+    $ virtualenv venv
+    ```
 
 2. Ative o ambiente vitual:
 
-- Linux/Mac
+-   Linux/Mac
 
     ```
-    source venv/bin/activate
+    $ source venv/bin/activate
     ```
 
-- Windows
+-   Windows
 
     ```
-    source venv\Scripts\activate
+    $ source venv\Scripts\activate
     ```
 
 3. Instale as dependências:
 
-```
-pip install -r requirements.txt
-```
+    ```
+    $ pip install -r requirements.txt
+    ```
 
 4. Migre as tabelas de banco de dados existentes executando
 
-```
-python manage.py migrate
-```
+    ```
+    $ python manage.py migrate
+    ```
 
 5. Execute o servidor de desenvolvimento Django usando
 
-```
-python manage.py runserver
-```
+    ```
+    $ python manage.py runserver
+    ```
 
 ## ☕ Usando LARA Core Server
 
