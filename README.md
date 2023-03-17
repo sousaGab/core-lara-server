@@ -8,8 +8,7 @@
     <img  style=" align-self: center; width:300px;" src="./assets/logo.png" alt="logo">
 </p>
 
-> **LARA** (**Laboratório em Redes de Aprendizagem**), trata de um **AVA** com o objetivo de ser uma
-> plataforma educacional que relaciona recursos tecnológicos e métodos de ensino para aprimorar o processo de ensino de disciplinas do curso de Ciência da Computação.
+> **LARA** (**Laboratório em Redes de Aprendizagem**), trata de um **AVA** com o objetivo de ser uma plataforma educacional que relaciona recursos tecnológicos e métodos de ensino para aprimorar o processo de ensino de disciplinas do curso de Ciência da Computação.
 
 ### Ajustes e melhorias
 
