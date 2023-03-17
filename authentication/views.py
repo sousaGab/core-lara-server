@@ -9,6 +9,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class LoginAPIView(GenericAPIView):
     
+    serializer_class = LoginSerializer
+    
     def post(self, request):
         data = request.data
         serializer = LoginSerializer(data=data)
