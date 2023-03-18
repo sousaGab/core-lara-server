@@ -26,32 +26,15 @@ O projeto ainda está em desenvolvimento e as próximas atualizações serão vo
 
 ## 🔗 Pré-requisitos
 
-#### Antes de começar, verifique se você atende aos seguintes requisitos:
+#### Antes de começar, verfique se você possui as ferramentas necessárias:
 
 <!---Estes são apenas requisitos de exemplo. Adicionar, duplicar ou remover conforme necessário--->
 
-<uL>
-  <li>
-    <a href="https://dev.mysql.com/doc/mysql-getting-started/en/">
-      MySQL
-    </a>
-  </li>
-  <li>
-    <a href="https://realpython.com/installing-python/">
-      Python3
-    </a>
-  </li>
-  <li>
-    <a href="https://www.liquidweb.com/kb/install-pip-windows/">
-      PIP
-    </a>
-  </li>
-  <li>
-    <a href="https://git-scm.com/downloads">
-      Git
-    </a>
-  </li>
-</uL>
+-   **[MYSQL](https://dev.mysql.com/doc/mysql-getting-started/en/)**
+-   **[Python3](https://realpython.com/installing-python/)**
+-   **[PIP](https://www.liquidweb.com/kb/install-pip-windows/)**
+-   **[Git](https://git-scm.com/downloads/)**
+
 
 #### Crie e configure o arquivo settings.py
 
@@ -103,6 +86,20 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
+
+## 🛠 Documentações das tecnologias utilizadas
+
+As seguintes ferramentas foram usadas na construção do projeto:
+
+-   **[Python 3](https://docs.python.org/3/#)**
+-   **[Django](https://docs.djangoproject.com/en/4.1/)**
+-   **[Django Rest Framework](https://www.django-rest-framework.org/)**
+-   **[Simple JWT](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/index.html#)**
+
+
+<!--
+
+
 ## ☕ Usando LARA Core Server
 
 Para usar LARA Core Server, siga estas etapas:
@@ -120,5 +117,6 @@ Framework <http://www.django-rest-framework.org/>`\_\_.
 
 For full documentation, visit `django-rest-framework-simplejwt.readthedocs.io
 <https://django-rest-framework-simplejwt.readthedocs.io/en/latest/>`\_\_.
+-->
 
 [⬆ Voltar ao topo](#start-of-project)<br>
