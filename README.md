@@ -26,6 +26,8 @@ O projeto ainda está em desenvolvimento e as próximas atualizações serão vo
 
 ## 📋 Documentação
 
+-   [Arquitetura do LARA](https://www.figma.com/file/91UzMFaOk8D6278BwBMWLm/LARA-ARCHITECTURE?node-id=0%3A1&t=HMdsFm4ShjrrlXL5-1)
+
 -   [Casos de Uso](https://raw.githubusercontent.com/sousaGab/core-lara-server/main/assets/documentation/use-case.png)
 -   [Banco de Dados - Diagrama](https://raw.githubusercontent.com/sousaGab/core-lara-server/main/assets/documentation/data-base-diagram.png)
 -   [Banco de Dados - Modelo Conceitual](https://raw.githubusercontent.com/sousaGab/core-lara-server/main/assets/documentation/data-base-conceptual-model.png)
