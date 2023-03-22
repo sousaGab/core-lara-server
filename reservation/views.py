@@ -28,10 +28,11 @@ class ReservationViewSet (viewsets.ModelViewSet):
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-                
-        self.get_serializer(queryset, many=True)
+        
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-    
+        
+        
     def filterDateParams(self, request, queryset):
         
         start = '2000-01-01T00:00:00'
