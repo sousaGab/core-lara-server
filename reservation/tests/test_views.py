@@ -91,6 +91,14 @@ class TestViews(APITestCase):
         response = self.client.get(self.reservation_view_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
+    def test_reservation_GET_element(self):
+        '''
+        This will test if GET request of reservation is successful
+        '''
+        url = self.reservation_view_url + str(self.reservation_1.pk)+ '/'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
     #POST
     def test_reservation_POST_without_authorization(self):
         '''

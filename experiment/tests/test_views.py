@@ -62,6 +62,13 @@ class TestViews(APITestCase):
         response = self.client.get(self.list_url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
+    def test_experiment_GET_element(self):
+        '''
+        This will test if GET request of experiment is successful
+        '''
+        url = self.list_url + str(self.experiment_1.pk)+ '/'
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     #POST
     def test_experiment_POST_without_authorization(self):
