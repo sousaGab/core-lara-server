@@ -29,7 +29,8 @@ class TestViews(APITestCase):
             type='Physical',
             description= 'Some Description',
             location= 'Test Location', 
-            institution= 'Fantasy Institution'
+            institution= 'Fantasy Institution',
+            schedule_time = 120
         )
         
         self.user_1 = User.objects.create_user(
@@ -60,8 +61,8 @@ class TestViews(APITestCase):
         self.reservation_3 = Reservation.objects.create(
             user= self.user_1,
             experiment= self.experiment_2,
-            start_datetime = '2023-05-18T12:21:00',
-            end_datetime = '2023-05-18T12:30:00'
+            start_datetime = '2023-05-17T12:00:00',
+            end_datetime = '2023-05-17T12:10:00'
         )
         
         self.new_data = {
@@ -75,7 +76,7 @@ class TestViews(APITestCase):
             'user': str(self.reservation_1.user.pk),
             'experiment': str(self.reservation_1.experiment.pk),
             'start_datetime': '17/05/2023 12:00',
-            'end_datetime': '17/05/2023 13:00'
+            'end_datetime': '17/05/2023 12:40'
         }
         
         self.patch_data = {
@@ -194,11 +195,8 @@ class TestViews(APITestCase):
         response = self.client.post(self.reservation_view_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Reservation.objects.all().count(), self.amount_of_reservations)
-        
-        #start_datetime = '2023-05-17T12:21:00',
-        #end_datetime = '2023-05-17T12:30:00'
-        
-        #Test with the time out of the range allowed in experiment registered
+         
+        #Test with time outside the allowed range in the registered experiment
         data = {
             'user': str(self.reservation_1.user.pk),
             'experiment': str(self.reservation_1.experiment.pk),
@@ -208,6 +206,8 @@ class TestViews(APITestCase):
         response = self.client.post(self.reservation_view_url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Reservation.objects.all().count(), self.amount_of_reservations)
+        expected_response_data = {'error': {'message': 'Reservation time exceeds experience time limit of ' + str(self.experiment_1.schedule_time)+ ' minutes'}}
+        self.assertEqual(response.data, expected_response_data)
         
         self.client.force_authenticate(user=None)
         self.client.force_authenticate(user=None)
@@ -309,6 +309,28 @@ class TestViews(APITestCase):
         response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
+        #Test with the start_datetime before and end_datetime after the range of another reservation already registered
+        data = {
+            'user': str(self.user_1.pk),
+            'experiment': str(self.reservation_3.experiment.pk),
+            'start_datetime': '17/05/2023 12:00',
+            'end_datetime': '17/05/2023 12:40'
+        }
+        response = self.client.put(url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+         
+        #Test with time outside the allowed range in the registered experiment
+        data = {
+            'user': str(self.user_1.pk),
+            'experiment': str(self.reservation_3.experiment.pk),
+            'start_datetime': '29/10/2023 13:00',
+            'end_datetime': '29/10/2023 17:00'
+        }
+        response = self.client.put(url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        expected_response_data = {'error': {'message': 'Reservation time exceeds experience time limit of ' + str(self.experiment_2.schedule_time)+ ' minutes'}}
+        self.assertEqual(response.data, expected_response_data)
+        
         self.client.force_authenticate(user=None)
        
     #PATCH
@@ -390,6 +412,15 @@ class TestViews(APITestCase):
         }
         response = self.client.patch(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
+        #Test with time outside the allowed range in the registered experiment
+        data = {
+            'start_datetime': '17/05/2023 01:00'
+        }
+        response = self.client.patch(url, data=data)
+        expected_response_data = {'error': {'message': 'Reservation time exceeds experience time limit of ' + str(self.experiment_2.schedule_time)+ ' minutes'}}
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, expected_response_data)
         
         self.client.force_authenticate(user=None)
     

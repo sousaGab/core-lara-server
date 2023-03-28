@@ -5,6 +5,7 @@ from django.db.models import Q
 from reservation.serializers import ReservationSerializer
 from reservation.models import Reservation
 from reservation.permissions import IsAdminOrOwnerUser
+from experiment.models import Experiment
 from datetime import datetime
 
 
@@ -81,12 +82,20 @@ class ReservationViewSet (viewsets.ModelViewSet):
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-     
-        reservations_serializer = self.get_serializer(experiment_availability['reservations'], many=True)
-        response_error = {
-            'error': 'unavailable datetime',
-            'reservations': reservations_serializer.data,
-        }
+        
+        
+        if 'time_limit' in experiment_availability:
+            response_error = {
+                'message': 'Reservation time exceeds experience time limit of '+ str(experiment_availability['time_limit']) +' minutes',
+            }
+        
+        else:      
+            reservations_serializer = self.get_serializer(experiment_availability['reservations'], many=True)
+            response_error = {
+                'message': 'unavailable datetime',
+                'reservations': reservations_serializer.data,
+            }
+
         return  Response({'error': response_error}, status=status.HTTP_400_BAD_REQUEST)
 
     """
@@ -129,16 +138,24 @@ class ReservationViewSet (viewsets.ModelViewSet):
 
             return Response(serializer.data)
     
-        reservations_serializer = self.get_serializer(experiment_availability['reservations'], many=True)
-        response_error = {
-            'message': 'unavailable datetime',
-            'reservations': reservations_serializer.data,
-        }
+        if 'time_limit' in experiment_availability:
+            response_error = {
+                'message': 'Reservation time exceeds experience time limit of '+ str(experiment_availability['time_limit']) +' minutes',
+            }
+        
+        else:      
+            reservations_serializer = self.get_serializer(experiment_availability['reservations'], many=True)
+            response_error = {
+                'message': 'unavailable datetime',
+                'reservations': reservations_serializer.data,
+            }
+            
         return  Response({'error': response_error}, status=status.HTTP_400_BAD_REQUEST)
         
 
     def availability(self, instance=None, experiment=None, 
                      start_datetime=None, end_datetime=None):  
+        
         
         available = False
         start = start_datetime
@@ -146,6 +163,18 @@ class ReservationViewSet (viewsets.ModelViewSet):
         
         if instance : experiment = instance.experiment_id
         
+        delta_time = (end - start).total_seconds()/60 
+        time_limit = Experiment.objects.get(id=experiment).schedule_time
+        
+        if delta_time > time_limit: 
+            #print('\n')
+            #print('start_date = ', start)
+            #print('end_date = ', end)
+            #print('time_limit = ', time_limit)
+            #print('time limit exceeded!')
+            #print('\n')
+            return({'available': available, 'time_limit': time_limit, 'reservations': []})
+       
         reservations = Reservation.objects.filter(
             (Q(experiment_id=experiment)&(
                 Q(start_datetime__range=[start, end]) |
