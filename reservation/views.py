@@ -166,13 +166,7 @@ class ReservationViewSet (viewsets.ModelViewSet):
         delta_time = (end - start).total_seconds()/60 
         time_limit = Experiment.objects.get(id=experiment).schedule_time
         
-        if delta_time > time_limit: 
-            #print('\n')
-            #print('start_date = ', start)
-            #print('end_date = ', end)
-            #print('time_limit = ', time_limit)
-            #print('time limit exceeded!')
-            #print('\n')
+        if delta_time > time_limit:
             return({'available': available, 'time_limit': time_limit, 'reservations': []})
        
         reservations = Reservation.objects.filter(
