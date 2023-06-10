@@ -5,6 +5,7 @@ from user.models import Profile
 from datetime import datetime
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from collections import OrderedDict
 
 
 class LoginAPIView(GenericAPIView):
@@ -51,19 +52,19 @@ class RegisterAPIView(GenericAPIView):
             user_profile = Profile.objects.get(user_id=instance.id)
             update_profile( 
                 profile=user_profile,
-                validated_data=request.data)
+                validated_data=request.data.copy())
             
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 def update_profile(profile, validated_data):
+   
+    data = validated_data
     
-    validated_data._mutable = True
-    
-    if 'birth_date' in validated_data:
-        validated_data['birth_date'] = datetime.strptime(
-            validated_data['birth_date'], "%d/%m/%Y")
+    if 'birth_date' in data:
+        data['birth_date'] = datetime.strptime(
+            data['birth_date'], "%d/%m/%Y")
     
     fields=profile._meta.fields
     exclude=[]
