@@ -18,35 +18,23 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework import routers
 from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
-schema_view = get_schema_view(
-   openapi.Info(
-      title="LARA Core Server - API",
-      default_version='v1',
-      description="LARA (Laboratório em Redes de Aprendizagem), trata de um AVA com o objetivo de ser uma plataforma educacional que relaciona recursos tecnológicos e métodos de ensino para aprimorar o processo de ensino de disciplinas do curso de Ciência da Computação.",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="gabrielamaralsousa@gmail.com"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
-)
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 router = routers.DefaultRouter()
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
     #path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
-    path('api/user/', include('user.urls')),
-    path('api/experiment/', include('experiment.urls')),
-    path('api/reservation/', include('reservation.urls')),
-    path('api/auth/', include('authentication.urls')),
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    #SWAGGER
+    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    #APPLICATIONS
+    path('user/', include('user.urls')),
+    path('experiment/', include('experiment.urls')),
+    path('reservation/', include('reservation.urls')),
+    path('auth/', include('authentication.urls')),
+    path('', include(router.urls)),
 ]
