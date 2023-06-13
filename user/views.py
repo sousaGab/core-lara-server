@@ -104,9 +104,9 @@ class UserViewSet(viewsets.ModelViewSet):
         Instantiates and returns the list of permissions that this view requires.
         '''    
        
-        allow_any = ['create']
-        allow_owner = ['retrieve', 'partial_update', 'update', 'destroy']
-        allow_admin = ['list', 'create']
+        allow_any = ['create', 'retrieve', 'list']
+        allow_owner = ['partial_update', 'update', 'destroy']
+        allow_admin = ['create']
         
         if self.action in allow_any:
             permission_classes = [permissions.AllowAny]

@@ -56,8 +56,8 @@ class ReservationViewSet (viewsets.ModelViewSet):
     """
     def create(self, request, *args, **kwargs):
         
-        data = request.data
-        data._mutable = True
+        data = request.data.copy()
+        #data._mutable = True
         
         required_fields = ['experiment', 'user', 'start_datetime', 'end_datetime']
         
