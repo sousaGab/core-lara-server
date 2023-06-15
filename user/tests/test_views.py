@@ -81,10 +81,9 @@ class TestViews(APITestCase):
         '''
         This will test if GET list request in user without permission is not allowed
         '''
-        self.client.force_authenticate(user=self.normal_user)
-        expected_response_data = {'detail': ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')}
+        expected_response_data = {'detail': ErrorDetail(string='Authentication credentials were not provided.', code='not_authenticated')}
         response = self.client.get(self.list_url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data, expected_response_data)
         self.client.force_authenticate(user=None)
 
@@ -109,11 +108,10 @@ class TestViews(APITestCase):
         '''
         This will test if GET request of individual user without permission is not allowed
         '''
-        self.client.force_authenticate(user=self.normal_user)
         url = self.list_url + str(self.user_2.pk) + '/'
-        expected_response_data = {'detail': ErrorDetail(string='You do not have permission to perform this action.', code='permission_denied')}
+        expected_response_data = {'detail': ErrorDetail(string='Authentication credentials were not provided.', code='not_authenticated')}
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data, expected_response_data)
         self.client.force_authenticate(user=None)
     
