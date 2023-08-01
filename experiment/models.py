@@ -6,7 +6,7 @@ class Experiment(models.Model):
         ('Physical', 'Physical'),
         ('Web', 'Web')
     )
-    name = models.CharField(max_length=30, blank=False)
+    name = models.TextField(max_length=250, blank=False)
     type = models.CharField(max_length=30, choices=TYPES, default=TYPES.Physical)
     description = models.TextField(max_length=300, blank=True)
     location = models.CharField(max_length=120, blank=True)
