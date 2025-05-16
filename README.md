@@ -70,6 +70,7 @@ Para instalar o LARA Core Server, siga estas etapas:
 ```bash
 # 1. Crie o ambiente virtual:
 $ virtualenv venv
+$ python -m venv /caminho/para/novo/ambiente/virtual
 
 # 2. Ative o ambiente vitual:
 
